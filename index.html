@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Home</title>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: #0f0;
+      font-family: Arial;
+      text-align: center;
+      padding: 20px
+    }
+
+    .btn {
+      margin: 20px;
+      padding: 30px 60px;
+      font-size: 30px;
+      background: #0a0;
+      color: white;
+      border: 0;
+      border-radius: 25px;
+      width: 90%
+    }
+
+    .off {
+      background: #a00
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🏠 My Smart Home</h1>
+  <div id="b"></div>
+  <script>
+    const firebaseConfig = { databaseURL: "https://mysmarthome-72617-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    for (let i = 1; i <= 5; i++) {
+      let btn = document.createElement("button");
+      btn.className = "btn"; btn.innerHTML = "Relay " + i + " OFF";
+      btn.onclick = () => { db.ref("relay" + i).set(btn.classList.contains("off") ? 1 : 0); };
+      document.getElementById("b").appendChild(btn);
+      document.getElementById("b").innerHTML += "<br><br>";
+      db.ref("relay" + i).on("value", s => {
+        let v = s.val() || 0;
+        btn.innerHTML = "Relay " + i + " " + (v ? "ON" : "OFF");
+        btn.className = v ? "btn" : "btn off";
+      });
+    }
+  </script>
+</body>
+
+</html>
